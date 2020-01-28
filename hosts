@@ -2,3 +2,4 @@ localhost       ansible_connection=local
 
 [targets]
 master     ansible_connection=ssh        ansible_user=sumanjswl36
+slave     ansible_connection=ssh        ansible_user=sumanjswl36

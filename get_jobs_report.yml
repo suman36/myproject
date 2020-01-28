@@ -1,28 +1,25 @@
-- hosts: localhost
+- hosts: targets
   become: true
   vars:
-    report_dir: /var/log/hadoop_reports
-    report_file: /var/log/hadoop_reports/report.csv
+    work_dir: /opt/ansible
+    report_file: report.csv
   tasks:
-    - name: Copy send.py file to /tmp/send.py
+    - name: Create a report directory
+      file:
+        path: "{{ work_dir }}"
+        state: directory
+
+    - name: Copy script
       copy:
         src: parse_hadoop_logs.py
-        dest: /tmp/parse_hadoop_logs.py
+        dest: "{{ work_dir }}"
         mode: 0555
 
     - name: Run script
-      shell: python /tmp/parse_hadoop_logs.py
+      shell: "{{ ansible_python.executable }} {{ work_dir }}/parse_hadoop_logs.py"
+      register: output
 
-    - name: Create a report directory
-      file:
-        path: "{{ report_dir }}"
-        state: directory
-
-    - name: Copy report file to local
-      fetch:
-        src: /tmp/report.csv
-        dest: "{{ report_file }}"
-
-    - name: Print report file
+    - name: print output
       debug:
-        msg: "\n---Report---\n{{ lookup('file', report_file).split('\n') }}\n"
+        var: output.stdout
+

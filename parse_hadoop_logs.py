@@ -5,7 +5,7 @@ HADOOP_LOGS_DIR = '/usr/local/hadoop/logs/userlogs'
 # HADOOP_LOGS_DIR = sys.argv[1]
 #HADOOP_LOGS_DIR = 'userlogs'
 SUCCESS_MESSAGE = 'Job Transitioned from COMMITTING to SUCCEEDED'
-REPORT_FILE = 'report.csv'
+REPORT_FILE = '/opt/ansible/report.csv'
 
 
 def list_log_files():
