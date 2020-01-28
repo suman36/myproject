@@ -1,0 +1,28 @@
+- hosts: localhost
+  become: true
+  vars:
+    report_dir: /var/log/hadoop_reports
+    report_file: /var/log/hadoop_reports/report.csv
+  tasks:
+    - name: Copy send.py file to /tmp/send.py
+      copy:
+        src: parse_hadoop_logs.py
+        dest: /tmp/parse_hadoop_logs.py
+        mode: 0555
+
+    - name: Run script
+      shell: python /tmp/parse_hadoop_logs.py
+
+    - name: Create a report directory
+      file:
+        path: "{{ report_dir }}"
+        state: directory
+
+    - name: Copy report file to local
+      fetch:
+        src: /tmp/report.csv
+        dest: "{{ report_file }}"
+
+    - name: Print report file
+      debug:
+        msg: "\n---Report---\n{{ lookup('file', report_file).split('\n') }}\n"
